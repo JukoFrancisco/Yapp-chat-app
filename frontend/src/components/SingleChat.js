@@ -30,7 +30,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
-  const selectedChatCompare = useRef(); // Use useRef here
+  const selectedChatCompare = useRef();
 
   const defaultOptions = {
     loop: true,
@@ -86,8 +86,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   }, []);
 
   useEffect(() => {
+    setMessages([]); // Reset messages state when selectedChat changes
     fetchMessages();
-    selectedChatCompare.current = selectedChat; // Access the current property
+    selectedChatCompare.current = selectedChat;
     // eslint-disable-next-line
   }, [selectedChat]);
 
@@ -96,8 +97,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
       if (
-        !selectedChatCompare.current || // Access the current property
-        selectedChatCompare.current._id !== newMessageRecieved.chat._id // Access the current property
+        !selectedChatCompare.current ||
+        selectedChatCompare.current._id !== newMessageRecieved.chat._id
       ) {
         if (!notification.includes(newMessageRecieved)) {
           setNotification([newMessageRecieved, ...notification]);
