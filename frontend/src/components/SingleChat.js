@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { ChatState } from "../Context/ChatProvider";
 import {
   Box,
@@ -30,6 +30,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
+  const selectedChatCompare = useRef(); // Use useRef here
 
   const defaultOptions = {
     loop: true,
@@ -77,16 +78,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   useEffect(() => {
-    socket = io(ENDPOINT);
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     fetchMessages();
-    selectedChatCompare = selectedChat;
+    selectedChatCompare.current = selectedChat; // Access the current property
+    // eslint-disable-next-line
   }, [selectedChat]);
 
   console.log(notification, "-----------------");
@@ -94,8 +96,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
       if (
-        !selectedChatCompare || // if chat is not selected or doesn't match current chat
-        selectedChatCompare._id !== newMessageRecieved.chat._id
+        !selectedChatCompare.current || // Access the current property
+        selectedChatCompare.current._id !== newMessageRecieved.chat._id // Access the current property
       ) {
         if (!notification.includes(newMessageRecieved)) {
           setNotification([newMessageRecieved, ...notification]);
@@ -105,7 +107,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setMessages([...messages, newMessageRecieved]);
       }
     });
-  });
+    // eslint-disable-next-line
+  }, [notification, selectedChatCompare, setNotification, setMessages]);
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
