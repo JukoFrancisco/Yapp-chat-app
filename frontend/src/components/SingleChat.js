@@ -105,11 +105,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           setFetchAgain(!fetchAgain);
         }
       } else {
-        setMessages([...messages, newMessageRecieved]);
+        setMessages((prevMessages) => [...prevMessages, newMessageRecieved]);
       }
     });
     // eslint-disable-next-line
-  }, [notification, selectedChatCompare, setNotification, setMessages]);
+  }, [notification, selectedChatCompare, setNotification]); // Removed setMessages from the dependency array
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
