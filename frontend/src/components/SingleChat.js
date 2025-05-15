@@ -20,7 +20,8 @@ import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
 
 import io from "socket.io-client";
-const ENDPOINT = "https://yapp-chat.onrender.com"; // "https://yapp-chat.onrender.com"
+const ENDPOINT = "https://yapp-chat.onrender.com";
+const socket = io(ENDPOINT);
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
